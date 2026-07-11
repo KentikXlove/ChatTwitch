@@ -1,11 +1,17 @@
 {
   "latest": {
-      "version": "1.2.0",
-      "id": "19T1SC79tvlKysW8k7kHCKyVn5-O56ySj",
+      "version": "2.0.0",
+      "id": "1eJynTI4Y5yeB4nmfiHp_scvEBthbWN-F",
       "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     },
   "versions": [
+    {
+      "version": "2.0.0",
+      "id": "1eJynTI4Y5yeB4nmfiHp_scvEBthbWN-F",
+      "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-2.0.0.zip",
+      "notes": "Relaese\nLauncher\nAnimations\nCFG adaptiv"
+    },
     {
       "version": "1.2.0",
       "id": "19T1SC79tvlKysW8k7kHCKyVn5-O56ySj",
