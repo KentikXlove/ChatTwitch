@@ -1,12 +1,14 @@
 {
   "latest": {
       "version": "1.2.0",
+      "id": "19T1SC79tvlKysW8k7kHCKyVn5-O56ySj",
       "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     },
   "versions": [
     {
       "version": "1.2.0",
+      "id": "19T1SC79tvlKysW8k7kHCKyVn5-O56ySj",
       "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     }
