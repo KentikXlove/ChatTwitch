@@ -1,13 +1,13 @@
 {
   "latest": {
       "version": "1.2.0",
-      "source_url": "https://github.com/KentikXlove/ChatTwitch/main/versions/ChatTwitch-1.2.0.zip",
+      "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     },
   "versions": [
     {
       "version": "1.2.0",
-      "source_url": "https://github.com/KentikXlove/ChatTwitch/main/versions/ChatTwitch-1.2.0.zip",
+      "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     }
   ]
