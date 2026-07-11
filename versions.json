@@ -1,14 +1,14 @@
 {
   "latest": {
       "version": "1.2.0",
-      "download_url": "https://github.com/KentikXlove/ChatTwitch/releases/download/v2.0.0/ChatTwitch-2.0.0.zip",
+      "download_url": "https://drive.google.com/uc?export=download&id=19T1SC79tvlKysW8k7kHCKyVn5-O56ySj",
       "source_url": "https://github.com/KentikXlove/ChatTwitch/main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     },
   "versions": [
     {
       "version": "1.2.0",
-      "download_url": "https://github.com/KentikXlove/ChatTwitch/releases/download/v2.0.0/ChatTwitch-2.0.0.zip",
+      "download_url": "https://drive.google.com/uc?export=download&id=19T1SC79tvlKysW8k7kHCKyVn5-O56ySj",
       "source_url": "https://github.com/KentikXlove/ChatTwitch/main/versions/ChatTwitch-1.2.0.zip",
       "notes": "test release"
     }
