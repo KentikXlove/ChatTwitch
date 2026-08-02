@@ -1,0 +1,714 @@
+/* ---- Базовые сбросы и тёмная тема ---- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ---- Запрет выделения (кроме полей ввода) ---- */
+* {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+input, textarea, [contenteditable="true"] {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+/* ---- Убираем жёлтую рамку при фокусе ---- */
+*:focus {
+    outline: none;
+}
+/* Для доступности можно оставить красивый фокус только при навигации с клавиатуры */
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 2px solid #9147ff;
+    outline-offset: 2px;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0e0e10;
+    color: #efeff1;
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* ---- Скроллбар ---- */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #1f1f23;
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #9147ff;
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #7a3bcc;
+}
+
+/* ---- Общие карточки и контейнеры ---- */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+}
+
+.card {
+    background: #18181b;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    border: 1px solid #2a2a2e;
+    margin-bottom: 20px;
+    transition: box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.card:hover {
+    box-shadow: 0 6px 16px rgba(0,0,0,0.8);
+}
+
+.card-title {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 18px;
+    color: #adadb8;
+    letter-spacing: 0.3px;
+}
+
+/* ---- Шапка (sticky) ---- */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #18181b;
+    border-bottom: 2px solid #1f1f23;
+    padding: 0 20px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+}
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.logo span {
+    color: #9147ff;
+}
+
+/* ---- Вкладки (главная/настройки) ---- */
+.tabs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+.tab-btn {
+    background: transparent;
+    border: none;
+    color: #adadb8;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.tab-btn i {
+    font-size: 18px;
+}
+.tab-btn:hover {
+    background: #2a2a2e;
+    color: #efeff1;
+}
+.tab-btn.active {
+    background: #2a2a2e;
+    color: #9147ff;
+}
+
+.tab-content {
+    display: none;
+    animation: fade 0.25s ease;
+    flex: 1;
+    min-height: 0;
+}
+.tab-content.active {
+    display: block;
+}
+@keyframes fade {
+    from { opacity: 0.3; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Главная: сетка информации и чата ---- */
+.main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 20px;
+    height: 100%;
+    min-height: 0;
+}
+@media (max-width: 800px) {
+    .main-grid {
+        grid-template-columns: 1fr;
+        height: auto;
+    }
+}
+
+/* ---- Информация о канале ---- */
+.info-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.avatar-wrapper {
+    flex: 0 0 120px;
+}
+.avatar-wrapper img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #9147ff;
+    background: #1f1f23;
+}
+
+.details {
+    flex: 1;
+    min-width: 180px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 24px;
+    align-content: start;
+}
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.detail-item .label {
+    font-size: 12px;
+    color: #adadb8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+.detail-item .value {
+    font-size: 18px;
+    font-weight: 600;
+    word-break: break-word;
+}
+.detail-item .value.online {
+    color: #00e5a0;
+}
+.detail-item .value.offline {
+    color: #adadb8;
+}
+
+/* ---- Контейнер графика ---- */
+.chart-container {
+    flex: 1;
+    min-height: 150px;
+    margin-top: 15px;
+    position: relative;
+}
+#viewersChart {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ---- Чат ---- */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.chat-header .card-title {
+    margin-bottom: 0;
+}
+
+#chat-box {
+    flex: 1;
+    overflow-y: auto;
+    background: #0e0e10;
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+    border: 1px solid #2a2a2e;
+    min-height: 200px;
+}
+
+.chat-message {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 6px 0;
+    border-bottom: 1px solid #1f1f23;
+}
+.chat-message:last-child {
+    border-bottom: none;
+}
+
+.chat-time {
+    font-size: 11px;
+    color: #5a5a66;
+    flex-shrink: 0;
+}
+.chat-username {
+    font-weight: 600;
+    flex-shrink: 0;
+    cursor: context-menu;
+}
+.chat-text {
+    word-break: break-word;
+    color: #efeff1;
+}
+.empty-chat {
+    color: #5a5a66;
+    text-align: center;
+    margin-top: 30px;
+    font-style: italic;
+}
+
+/* Смайлики */
+.emote {
+    display: inline-block;
+    vertical-align: middle;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+/* ---- Кнопки ---- */
+.btn-outline {
+    background: transparent;
+    border: 1px solid #9147ff;
+    color: #9147ff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.btn-outline:hover {
+    background: #9147ff;
+    color: #fff;
+}
+
+/* ---- Настройки (подвкладки) ---- */
+.settings-layout {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+@media (max-width: 600px) {
+    .settings-layout {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+
+.settings-nav {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.settings-nav-btn {
+    background: transparent;
+    border: none;
+    color: #adadb8;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 15px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.settings-nav-btn:hover {
+    background: #2a2a2e;
+    color: #efeff1;
+}
+.settings-nav-btn.active {
+    background: #2a2a2e;
+    color: #9147ff;
+}
+
+.settings-content {
+    flex: 1;
+}
+.settings-category {
+    display: none;
+}
+.settings-category.active {
+    display: block;
+}
+
+.settings-section {
+    margin-bottom: 30px;
+    border-bottom: 1px solid #2a2a2e;
+    padding-bottom: 20px;
+}
+.settings-section h3 {
+    color: #adadb8;
+    font-weight: 400;
+    margin-bottom: 15px;
+}
+
+.settings-group {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+.settings-group label {
+    font-size: 15px;
+    color: #adadb8;
+    min-width: 120px;
+}
+.settings-group input,
+.settings-group select,
+.settings-group textarea {
+    background: #0e0e10;
+    border: 1px solid #3a3a42;
+    color: #efeff1;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.2s;
+    font-family: inherit;
+    flex: 1;
+    min-width: 200px;
+}
+.settings-group input:focus,
+.settings-group select:focus,
+.settings-group textarea:focus {
+    outline: none;
+    border-color: #9147ff;
+}
+.settings-group textarea {
+    height: 80px;
+    resize: vertical;
+}
+.settings-group button {
+    background: #9147ff;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.settings-group button:hover {
+    background: #7a3bcc;
+}
+
+.settings-status {
+    font-size: 14px;
+    color: #00e5a0;
+    margin-left: 8px;
+}
+.settings-status.error {
+    color: #ff6b6b;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #9147ff;
+    flex: 0 0 auto;
+}
+
+.help-text {
+    color: #5a5a66;
+    font-size: 13px;
+    margin-left: 10px;
+}
+
+.settings-save-all {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #2a2a2e;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.settings-save-all button {
+    background: #9147ff;
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.settings-save-all button:hover {
+    background: #7a3bcc;
+}
+
+/* ---- Аватар в оверлее (дополнительно для chat-message) ---- */
+.chat-message .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background: #9147ff; /* fallback */
+}
+
+/* ---- Переключатели (toggle) — улучшенный дизайн ---- */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 30px;
+    flex-shrink: 0;
+}
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #3a3a42;
+    border-radius: 30px;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+}
+.toggle-slider::before {
+    content: "";
+    position: absolute;
+    height: 22px;
+    width: 22px;
+    left: 4px;
+    bottom: 4px;
+    background: #ffffff;
+    border-radius: 50%;
+    transition: transform 0.25s ease, background 0.25s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.toggle input:checked + .toggle-slider {
+    background: #9147ff;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2), 0 0 8px rgba(145, 71, 255, 0.4);
+}
+.toggle input:checked + .toggle-slider::before {
+    transform: translateX(26px);
+    background: #ffffff;
+}
+.toggle:hover .toggle-slider {
+    filter: brightness(1.1);
+}
+.toggle input:disabled + .toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---- Карточки оверлеев ---- */
+.overlay-card {
+    background: #0e0e10;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border: 1px solid #2a2a2e;
+}
+.overlay-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.overlay-name {
+    font-size: 18px;
+    font-weight: 500;
+}
+.overlay-desc {
+    color: #adadb8;
+    font-size: 14px;
+    margin-top: 6px;
+}
+.overlay-desc code {
+    background: #1f1f23;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #9147ff;
+}
+.overlay-settings {
+    border-top: 1px solid #2a2a2e;
+    padding-top: 12px;
+    margin-top: 8px;
+}
+.overlay-settings .settings-group {
+    margin-bottom: 12px;
+}
+.overlay-settings .settings-group label {
+    min-width: 100px;
+}
+.btn-sm {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+.btn-primary {
+    background: #9147ff;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 6px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-primary:hover {
+    background: #7a3bcc;
+}
+
+/* ---- Контекстное меню ---- */
+#contextMenu {
+    display: none;
+    position: fixed;
+    background: #18181b;
+    border: 1px solid #3a3a42;
+    border-radius: 8px;
+    padding: 6px 0;
+    min-width: 220px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+.ctx-item {
+    padding: 8px 18px;
+    color: #efeff1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+}
+.ctx-item i {
+    width: 18px;
+    text-align: center;
+    color: #adadb8;
+}
+.ctx-item:hover {
+    background: #2a2a2e;
+}
+.ctx-item:active {
+    background: #3a3a42;
+}
+/* ---- Разница подписчиков ---- */
+.diff-positive {
+    color: #00e5a0;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.diff-negative {
+    color: #ff6b6b;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+/* ---- Разница подписчиков (всегда отображается) ---- */
+.diff-positive {
+    color: #00e5a0;
+    font-weight: 600;
+}
+.diff-negative {
+    color: #ff6b6b;
+    font-weight: 600;
+}
+.diff-neutral {
+    color: #adadb8;
+    font-weight: 400;
+}
+
+/* ---- Контекстное меню ---- */
+#contextMenu {
+    display: none;
+    position: fixed;
+    background: #18181b;
+    border: 1px solid #3a3a42;
+    border-radius: 8px;
+    padding: 6px 0;
+    min-width: 220px;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.8);
+}
+.ctx-item {
+    padding: 8px 18px;
+    color: #efeff1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+}
+.ctx-item i {
+    width: 18px;
+    text-align: center;
+    color: #adadb8;
+}
+.ctx-item:hover {
+    background: #2a2a2e;
+}
+.ctx-item:active {
+    background: #3a3a42;
+}
