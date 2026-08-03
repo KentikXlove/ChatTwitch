@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Чат-оверлей</title>
+    <style id="custom-style"></style>
+    <style>
+        /* ---- Базовые стили для оверлея (как в вашем рабочем примере) ---- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: transparent;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #eaeaf0;
+            overflow: hidden;
+            padding: 10px 20px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            gap: 4px;
+            padding-bottom: 4px;
+            overflow-y: auto;           /* ← прокрутка работает, но полоса скрыта */
+            scrollbar-width: none;      /* Firefox */
+            -ms-overflow-style: none;   /* IE / Edge */
+        }
+        #messages::-webkit-scrollbar {
+            display: none;              /* Chrome, Safari, Opera */
+        }
+
+        .chat-msg {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(2px);
+            border-left: 3px solid transparent;
+            font-size: 14px;
+            line-height: 1.4;
+            word-break: break-word;
+            animation: fadeIn 0.25s ease-out;
+            transition: all 0.2s;
+            --avatar-size: 28px;
+        }
+        .chat-msg:hover {
+            background: rgba(255,255,255,0.05);
+            border-left-color: #7c5cfc;
+        }
+
+        .chat-avatar {
+            width: var(--avatar-size, 28px);
+            height: var(--avatar-size, 28px);
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            background: #2a2a3a;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chat-badges {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            margin-right: 2px;
+        }
+        .chat-badge {
+            height: 18px;
+            width: auto;
+            vertical-align: middle;
+        }
+
+        .chat-username {
+            font-weight: 600;
+            margin-right: 2px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .chat-username:hover {
+            opacity: 0.8;
+        }
+
+        .chat-time {
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            margin-left: auto;
+            flex-shrink: 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .chat-msg:hover .chat-time {
+            opacity: 1;
+        }
+
+        .chat-emote {
+            height: 1.4em;
+            width: auto;
+            vertical-align: middle;
+            display: inline-block;
+            margin: 0 1px;
+        }
+
+        /* ---- Анимации (ваши же) ---- */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes bounceIn {
+            0% { opacity: 0; transform: scale(0.3); }
+            50% { opacity: 1; transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); }
+        }
+        @keyframes glowIn {
+            from { opacity: 0; filter: blur(8px); }
+            to { opacity: 1; filter: blur(0); }
+        }
+        @keyframes flipIn {
+            from { opacity: 0; transform: perspective(400px) rotateX(90deg); }
+            to { opacity: 1; transform: perspective(400px) rotateX(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(20px); }
+        }
+        @keyframes popOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.8); }
+        }
+        @keyframes bounceOut {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.1); }
+            100% { transform: scale(0); opacity: 0; }
+        }
+        @keyframes glowOut {
+            from { opacity: 1; filter: blur(0); }
+            to { opacity: 0; filter: blur(8px); }
+        }
+        @keyframes flipOut {
+            from { opacity: 1; transform: perspective(400px) rotateX(0); }
+            to { opacity: 0; transform: perspective(400px) rotateX(90deg); }
+        }
+
+        .anim-fade { animation: fadeIn var(--anim-speed, 0.3s) ease-out forwards; }
+        .anim-slide { animation: slideIn var(--anim-speed, 0.3s) ease-out forwards; }
+        .anim-pop { animation: popIn var(--anim-speed, 0.3s) ease-out forwards; }
+        .anim-bounce { animation: bounceIn var(--anim-speed, 0.5s) ease-out forwards; }
+        .anim-glow { animation: glowIn var(--anim-speed, 0.4s) ease-out forwards; }
+        .anim-flip { animation: flipIn var(--anim-speed, 0.4s) ease-out forwards; }
+
+        .exit-fade { animation: fadeOut var(--anim-speed, 0.3s) ease-in forwards; }
+        .exit-slide { animation: slideOut var(--anim-speed, 0.3s) ease-in forwards; }
+        .exit-pop { animation: popOut var(--anim-speed, 0.3s) ease-in forwards; }
+        .exit-bounce { animation: bounceOut var(--anim-speed, 0.4s) ease-in forwards; }
+        .exit-glow { animation: glowOut var(--anim-speed, 0.3s) ease-in forwards; }
+        .exit-flip { animation: flipOut var(--anim-speed, 0.3s) ease-in forwards; }
+
+        .chat-msg.removing {
+            pointer-events: none;
+        }
+        .chat-msg.visible {
+            opacity: 1;
+        }
+        .empty-message {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="messages"></div>
+
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+        // ================================================================
+        //  ОВЕРЛЕЙ – РАБОЧАЯ АВТОПРОКРУТКА (как в вашем примере)
+        // ================================================================
+
+        const socket = io();
+        const messagesDiv = document.getElementById('messages');
+        const customStyle = document.getElementById('custom-style');
+
+        // ---- Глобальные настройки (синхронизируются с сервером) ----
+        let showAvatars = false;
+        let avatarSize = 28;
+        let messageTTL = 0;
+        let animSettings = {
+            entry: 'fade',
+            exit: 'fade',
+            speed: 300,
+            delay: 0
+        };
+        let emoteMap = {};
+
+        // ---- Загрузка смайликов (ваш API) ----
+        async function loadAllEmotes() {
+            try {
+                const resp = await fetch('/api/emotes');
+                if (!resp.ok) throw new Error('Emotes API error');
+                const data = await resp.json();
+                emoteMap = data;
+                console.log('✅ Загружено смайлов:', Object.keys(emoteMap).length);
+            } catch (e) {
+                console.warn('Не удалось загрузить эмоции:', e);
+                emoteMap = {};
+            }
+        }
+
+        function replaceEmotes(text) {
+            if (!text || !emoteMap || Object.keys(emoteMap).length === 0) return text;
+            const sortedKeys = Object.keys(emoteMap).sort((a, b) => b.length - a.length);
+            const escapedKeys = sortedKeys.map(key => key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+            const regex = new RegExp('(' + escapedKeys.join('|') + ')', 'g');
+            return text.replace(regex, (match) => {
+                return `<img class="chat-emote" src="${emoteMap[match]}" alt="${match}" title="${match}" loading="lazy" />`;
+            });
+        }
+
+        // ---- Аватары (опционально) ----
+        const avatarCache = {};
+        async function loadAvatar(username) {
+            if (avatarCache[username]) return avatarCache[username];
+            try {
+                const resp = await fetch(`/api/avatar/${encodeURIComponent(username)}`);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.url) {
+                        avatarCache[username] = data.url;
+                        return data.url;
+                    }
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function renderBadges(badges) {
+            if (!badges || badges.length === 0) return '';
+            let html = '';
+            badges.forEach(b => {
+                html += `<img class="chat-badge" src="https://static-cdn.jtvnw.net/badges/v1/${b.name}/${b.version}" alt="${b.name}" title="${b.name}" />`;
+            });
+            return html;
+        }
+
+        function getAnimationClass(effect, type) {
+            return (type === 'entry' ? 'anim-' : 'exit-') + effect;
+        }
+
+        // ================================================================
+        //  ГЛАВНОЕ – АВТОПРОКРУТКА (как в вашем рабочем примере)
+        // ================================================================
+
+        function hasOverflow() {
+            // Проверяем, есть ли прокрутка у контейнера #messages
+            return messagesDiv.scrollHeight > messagesDiv.clientHeight;
+        }
+
+        function isUserNearBottom() {
+            // Определяем, находится ли пользователь внизу контейнера
+            const threshold = 100;
+            return messagesDiv.scrollTop + messagesDiv.clientHeight >= messagesDiv.scrollHeight - threshold;
+        }
+
+        function scrollToBottom(behavior = 'smooth') {
+            messagesDiv.scrollTo({ top: messagesDiv.scrollHeight, behavior });
+        }
+
+        function safeScrollToBottom(force = false) {
+            // Если контент не выходит за границы – ничего не делаем
+            if (!hasOverflow()) return;
+            // Если не принудительно и пользователь не внизу – не мешаем
+            if (!force && !isUserNearBottom()) return;
+            // Ждём два кадра, чтобы браузер точно пересчитал макет
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    scrollToBottom(force ? 'auto' : 'smooth');
+                });
+            });
+        }
+
+        // ================================================================
+        //  ДОБАВЛЕНИЕ СООБЩЕНИЯ
+        // ================================================================
+
+        function addMessageToDOM(data, animate = true) {
+            const msgEl = document.createElement('div');
+            msgEl.className = 'chat-msg';
+            msgEl.style.setProperty('--avatar-size', avatarSize + 'px');
+
+            const entryEffect = animSettings.entry || 'fade';
+            msgEl.classList.add(getAnimationClass(entryEffect, 'entry'));
+            msgEl.style.setProperty('--anim-speed', (animSettings.speed / 1000) + 's');
+            if (animSettings.delay > 0 && animate) {
+                msgEl.style.animationDelay = (animSettings.delay / 1000) + 's';
+            }
+
+            // Аватар
+            const avatar = document.createElement('img');
+            avatar.className = 'chat-avatar';
+            avatar.alt = data.username;
+            if (showAvatars) {
+                loadAvatar(data.username).then(url => {
+                    if (url) avatar.src = url;
+                    else avatar.style.display = 'none';
+                });
+                avatar.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"%3E%3Ccircle cx="16" cy="16" r="16" fill="%23333"/%3E%3Ctext x="16" y="20" text-anchor="middle" fill="%23999" font-size="14" font-family="sans-serif"%3E?%3C/text%3E%3C/svg%3E';
+            } else {
+                avatar.style.display = 'none';
+            }
+
+            // Бэйджи
+            const badgesSpan = document.createElement('span');
+            badgesSpan.className = 'chat-badges';
+            badgesSpan.innerHTML = renderBadges(data.badges || []);
+
+            // Имя
+            const userSpan = document.createElement('span');
+            userSpan.className = 'chat-username';
+            userSpan.style.color = data.color || 'white';
+            userSpan.textContent = data.username;
+
+            // Текст
+            const textSpan = document.createElement('span');
+            textSpan.innerHTML = replaceEmotes(data.message);
+
+            // Время
+            const timeSpan = document.createElement('span');
+            timeSpan.className = 'chat-time';
+            const ts = data.timestamp ? new Date(data.timestamp) : new Date();
+            timeSpan.textContent = ts.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+            msgEl.appendChild(avatar);
+            msgEl.appendChild(badgesSpan);
+            msgEl.appendChild(userSpan);
+            msgEl.appendChild(document.createTextNode(': '));
+            msgEl.appendChild(textSpan);
+            msgEl.appendChild(timeSpan);
+
+            messagesDiv.appendChild(msgEl);
+
+            // Убираем анимацию после окончания
+            const onAnimationEnd = () => {
+                msgEl.classList.add('visible');
+                msgEl.removeEventListener('animationend', onAnimationEnd);
+            };
+            msgEl.addEventListener('animationend', onAnimationEnd);
+            setTimeout(() => {
+                if (!msgEl.classList.contains('visible')) {
+                    msgEl.classList.add('visible');
+                }
+            }, animSettings.speed + 50);
+
+            // ---- АВТОПРОКРУТКА (вызываем после добавления) ----
+            safeScrollToBottom(false);
+
+            // Автоудаление через TTL (ИЗМЕНЕНО – используется messageTTL)
+            if (messageTTL > 0) {
+                setTimeout(() => {
+                    removeMessageWithAnimation(msgEl);
+                }, messageTTL * 1000);
+            }
+        }
+
+        function removeMessageWithAnimation(msgEl) {
+            const exitEffect = animSettings.exit || 'fade';
+            ['fade','slide','pop','typewriter','bounce','glow','flip'].forEach(effect => {
+                msgEl.classList.remove('anim-' + effect);
+            });
+            msgEl.classList.add('exit-' + exitEffect);
+            msgEl.classList.add('removing');
+            msgEl.classList.remove('visible');
+            const onExitEnd = () => {
+                if (msgEl.parentNode) msgEl.remove();
+                msgEl.removeEventListener('animationend', onExitEnd);
+            };
+            msgEl.addEventListener('animationend', onExitEnd);
+            setTimeout(() => {
+                if (msgEl.parentNode) msgEl.remove();
+            }, animSettings.speed + 100);
+        }
+
+        // ================================================================
+        //  ЗАГРУЗКА ИСТОРИИ
+        // ================================================================
+
+        async function loadHistory() {
+            try {
+                const resp = await fetch('/api/messages');
+                const data = await resp.json();
+                if (data.messages && data.messages.length > 0) {
+                    const originalEntry = animSettings.entry;
+                    animSettings.entry = 'fade'; // без анимации для истории
+                    data.messages.forEach(msg => addMessageToDOM(msg, false));
+                    animSettings.entry = originalEntry;
+                    // Принудительная прокрутка вниз после загрузки
+                    setTimeout(() => safeScrollToBottom(true), 300);
+                }
+            } catch (e) {}
+        }
+
+        // ================================================================
+        //  ПРИМЕНЕНИЕ КОНФИГА (с сервера)
+        // ================================================================
+
+        function applyConfig(config) {
+            if (config.ttl !== undefined) messageTTL = config.ttl;
+            if (config.show_avatars !== undefined) showAvatars = config.show_avatars;
+            if (config.avatar_size !== undefined) {
+                avatarSize = config.avatar_size;
+                document.querySelectorAll('.chat-msg').forEach(el => {
+                    el.style.setProperty('--avatar-size', avatarSize + 'px');
+                });
+            }
+            if (config.css) customStyle.textContent = config.css;
+            else customStyle.textContent = '';
+
+            if (config.animation) {
+                animSettings.entry = config.animation.entry || 'fade';
+                animSettings.exit = config.animation.exit || 'fade';
+                animSettings.speed = config.animation.speed || 300;
+                animSettings.delay = config.animation.delay || 0;
+                document.documentElement.style.setProperty('--anim-speed', (animSettings.speed / 1000) + 's');
+            }
+
+            // Обновляем видимость аватаров
+            document.querySelectorAll('.chat-msg').forEach(msgEl => {
+                const avatar = msgEl.querySelector('.chat-avatar');
+                if (avatar) {
+                    if (showAvatars) {
+                        avatar.style.display = '';
+                        if (!avatar.src || avatar.src.includes('data:image')) {
+                            const username = msgEl.querySelector('.chat-username')?.textContent;
+                            if (username) loadAvatar(username).then(url => { if (url) avatar.src = url; });
+                        }
+                    } else {
+                        avatar.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // ================================================================
+        //  ИНИЦИАЛИЗАЦИЯ
+        // ================================================================
+
+        async function initOverlay() {
+            await loadAllEmotes();
+
+            try {
+                const resp = await fetch('/api/config');
+                const data = await resp.json();
+                // ИЗМЕНЕНО: теперь берём из data.overlay
+                const overlay = data.overlay || {};
+                const overlayConfig = {
+                    ttl: overlay.message_ttl || 0,            // <-- ИЗМЕНЕНО
+                    show_avatars: overlay.show_avatar !== false,
+                    avatar_size: overlay.avatar_size || 28,
+                    css: overlay.custom_css || '',
+                    animation: overlay.animation || { entry: 'fade', exit: 'fade', speed: 300, delay: 0 }
+                };
+                applyConfig(overlayConfig);
+            } catch (e) {}
+
+            await loadHistory();
+
+            // ---- Socket.IO события ----
+            socket.on('new_message', (data) => {
+                addMessageToDOM(data, true);
+            });
+
+            socket.on('chat_history', (messages) => {
+                // Очищаем и загружаем историю
+                messagesDiv.innerHTML = '';
+                messages.forEach(msg => addMessageToDOM(msg, false));
+                setTimeout(() => safeScrollToBottom(true), 300);
+            });
+
+            socket.on('settings_updated', () => {
+                // Перезагружаем конфиг
+                fetch('/api/config')
+                    .then(r => r.json())
+                    .then(data => {
+                        const overlay = data.overlay || {};
+                        const overlayConfig = {
+                            ttl: overlay.message_ttl || 0,          // <-- ИЗМЕНЕНО
+                            show_avatars: overlay.show_avatar !== false,
+                            avatar_size: overlay.avatar_size || 28,
+                            css: overlay.custom_css || '',
+                            animation: overlay.animation || { entry: 'fade', exit: 'fade', speed: 300, delay: 0 }
+                        };
+                        applyConfig(overlayConfig);
+                    });
+            });
+
+            socket.on('overlay_settings_updated', (overlays) => {
+                // Если чат отключён – очищаем и показываем заглушку
+                if (overlays.chat_enabled === false) {
+                    messagesDiv.innerHTML = '<div style="text-align:center;color:#888;margin-top:40px;"></div>';
+                } else {
+                    // Если был отключён – перезагружаем историю
+                    if (messagesDiv.children.length === 0) {
+                        loadHistory();
+                    }
+                }
+            });
+
+            socket.on('connect', () => {
+                console.log('Оверлей подключён к сокету');
+                // Запрашиваем историю заново
+                socket.emit('request_history');
+            });
+
+            // При изменении размера окна – корректируем прокрутку
+            window.addEventListener('resize', () => safeScrollToBottom(true));
+
+            console.log('🔄 Оверлей инициализирован с автопрокруткой');
+        }
+
+        // Запуск
+        initOverlay();
+    </script>
+</body>
+</html>
