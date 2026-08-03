@@ -1,10 +1,15 @@
 {
   "latest": {
-    "version": "3.0.0",
-    "id": "1vQs9cTltM2XN2EdGXNTPXslUKxgrwins",
-    "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-3.0.0"
+    "version": "3.1.0",
+    "id": "1AnJmNrAoN_mATllV3In8rMtMr0B4t5dh",
+    "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-3.1.0"
   },
   "versions": [
+    {
+      "version": "3.1.0",
+      "id": "1AnJmNrAoN_mATllV3In8rMtMr0B4t5dh",
+      "source_url": "https://cdn.jsdelivr.net/gh/KentikXlove/ChatTwitch@main/versions/ChatTwitch-3.1.0"
+    },
     {
       "version": "3.0.0",
       "id": "1vQs9cTltM2XN2EdGXNTPXslUKxgrwins",
